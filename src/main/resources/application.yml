@@ -1,0 +1,18 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  info:
+    env:
+      enabled: true
+
+info:
+  application:
+    name: MyAccountant-BackEnd
+    description: A digital platform designed to assist accountants with activities such as employee data and company inventory data.
+    author: Yoghi Setiawan
+    version: '@project.version@'
+spring:
+  profiles:
+    active: dev

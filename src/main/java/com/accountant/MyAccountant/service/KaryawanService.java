@@ -54,8 +54,6 @@ private final KaryawanRepository karyawanRepository;
 
 
     public List<Karyawan> showAllKaryawan() {
-
-
         return karyawanRepository.findAll();
     }
 

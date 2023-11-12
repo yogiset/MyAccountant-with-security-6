@@ -35,11 +35,11 @@ public class KaryawanController {
         return "Data karyawan telah dihapus!!";
     }
 
-    @PutMapping("/update/{id}")
-    public Karyawan updateKaryawan(@PathVariable("id") Long id,
-                                   @RequestBody Karyawan karyawan) throws AllException {
-        return karyawanService.updateKaryawan(id,karyawan);
-    }
+        @PutMapping("/update/{id}")
+        public Karyawan updateKaryawan(@PathVariable("id") Long id,
+                                       @RequestBody Karyawan karyawan) throws AllException {
+            return karyawanService.updateKaryawan(id,karyawan);
+        }
 
     @DeleteMapping("/deletecode/{kodekaryawan}")
     public String deleteKaryawanByCode(@PathVariable("kodekaryawan")String kodekaryawan) throws AllException {

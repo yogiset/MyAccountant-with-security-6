@@ -2,6 +2,7 @@ package com.accountant.MyAccountant.controller;
 
 import com.accountant.MyAccountant.entity.User;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
@@ -21,10 +22,10 @@ public interface UserController {
     public List<User> listUser();
 
     @PostMapping(path = "/forgotPassword")
-    ResponseEntity<String>forgotPassword(@RequestBody Map<String,String> requestMap);
+    ResponseEntity<String>forgotPassword(@RequestBody Map<String,String> requestMap,String role);
 
     @PostMapping("/changePassword")
-    ResponseEntity<String> changePassword(@RequestBody Map<String, String> requestMap,String userEmail);
+    ResponseEntity<String> changePassword(@RequestBody Map<String, String> requestMap,User userr,String userEmail,String userRole);
 
 
 }

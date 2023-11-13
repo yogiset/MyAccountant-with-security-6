@@ -4,20 +4,28 @@ import com.accountant.MyAccountant.entity.Karyawan;
 import com.accountant.MyAccountant.exception.AllException;
 import com.accountant.MyAccountant.repository.KaryawanRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class KaryawanService {
 
 private final KaryawanRepository karyawanRepository;
+private String userRole;
+    public Karyawan addKaryawan(Karyawan karyawan, Map<String,String> requestMap) throws AllException {
+        log.info("Received request with payload: {}", requestMap);
+
+        userRole = requestMap.get("role");
+        log.info("User Role from request: {}", userRole);
 
 
-    public Karyawan addKaryawan(Karyawan karyawan) throws AllException {
         for (int i = 0; i < 10; i++) {
             String randomKaryawan = UUIDGeneratorService.generateKaryawan();
             karyawan.setKodekaryawan(randomKaryawan);
@@ -68,7 +76,12 @@ private final KaryawanRepository karyawanRepository;
     }
 
 
-    public void deleteKaryawanById(Long id) throws AllException {
+    public void deleteKaryawanById(Long id,Map<String,String> requestMap,String userRole) throws AllException {
+        log.info("Received request with payload: {}", requestMap);
+
+        userRole = requestMap.get("role");
+        log.info("User Role from request: {}", userRole);
+
         boolean exist = karyawanRepository.existsById(id);
         if (!exist) {
             throw new AllException("karyawan dengan Id" + id + "tidak ada");
@@ -79,7 +92,12 @@ private final KaryawanRepository karyawanRepository;
     }
 
 
-    public Karyawan updateKaryawan(Long id, Karyawan karyawan) throws AllException {
+    public Karyawan updateKaryawan(Long id, Karyawan karyawan,Map<String,String> requestMap,String userRole) throws AllException {
+        log.info("Received request with payload: {}", requestMap);
+
+        userRole = requestMap.get("role");
+        log.info("User Role from request: {}", userRole);
+
         if (karyawan.getNama() == null || karyawan.getNama().isEmpty()) {
             throw new AllException("Nama harus di isi !!!");
         }
@@ -118,7 +136,12 @@ private final KaryawanRepository karyawanRepository;
     }
 
 
-    public void deleteKaryawanByKodeKaryawan(String kodekaryawan) throws AllException {
+    public void deleteKaryawanByKodeKaryawan(String kodekaryawan,Map<String,String> requestMap,String userRole) throws AllException {
+        log.info("Received request with payload: {}", requestMap);
+
+        userRole = requestMap.get("role");
+        log.info("User Role from request: {}", userRole);
+
         Optional<Karyawan> deleteKaryawan = karyawanRepository.findBykodekaryawan(kodekaryawan);
         if (!deleteKaryawan.isPresent()) {
             throw new AllException("karyawan dengan kode karyawan" + kodekaryawan + "tidak ada");
@@ -129,8 +152,11 @@ private final KaryawanRepository karyawanRepository;
     }
 
 
-    public Karyawan updateKaryawanByKodeKaryawan(String kodekaryawan, Karyawan karyawan) throws AllException {
+    public Karyawan updateKaryawanByKodeKaryawan(String kodekaryawan, Karyawan karyawan,Map<String,String> requestMap,String userRole) throws AllException {
+        log.info("Received request with payload: {}", requestMap);
 
+        userRole = requestMap.get("role");
+        log.info("User Role from request: {}", userRole);
 
         if (karyawan.getNama() == null || karyawan.getNama().isEmpty()) {
             throw new AllException("Nama harus di isi !!!");

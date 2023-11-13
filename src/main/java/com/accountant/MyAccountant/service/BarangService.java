@@ -1,52 +1,78 @@
 package com.accountant.MyAccountant.service;
 
 import com.accountant.MyAccountant.entity.Barang;
+import com.accountant.MyAccountant.entity.User;
 import com.accountant.MyAccountant.exception.AllException;
 import com.accountant.MyAccountant.repository.BarangRepository;
+import com.accountant.MyAccountant.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BarangService {
 
 private final BarangRepository barangRepository;
+private final UserRepository userRepository;
 
+    public Barang addBarang(Barang barang,Map<String,String> requestMap,String userRole,User user) throws AllException {
 
-    public Barang addBarang(Barang barang) throws AllException {
-        for (int i = 0; i < 10; i++) {
-            String randomBarang = UUIDGeneratorService.generateBarang();
-            barang.setKodebarang(randomBarang);
-        }
+        log.info("Received request with payload: {}", requestMap);
 
-        if (barang.getNamabarang() == null || barang.getNamabarang().isEmpty()) {
-            throw new AllException("Nama barang harus di isi !!!");
-        }
-        if (barang.getJenisbarang() == null || barang.getJenisbarang().isEmpty()) {
-            throw new AllException("Jenis barang harus di isi !!!");
-        }
-        if (barang.getJumlahbarang() == null || barang.getJumlahbarang().describeConstable().isEmpty()) {
-            throw new AllException("Jumlah barang harus di isi !!!");
-        }
-        if (barang.getHargabarang() == null || barang.getHargabarang().describeConstable().isEmpty()) {
-            throw new AllException("No HP harus di isi !!!");
-        }
+//        userRole = user.getRole();
+        userRole = requestMap.get("role");
+        log.info("User Role from request: {}", userRole);
+//        if (userRole == null || userRole.isEmpty()) {
+//            log.error("role is null or empty");
+//            throw new AllException("role is null or empty");
+//        }
+//
+//        if ("admin".equalsIgnoreCase(userRole)) {
+//           User role = userRepository.findByRole(userRole);
 
-        Optional<LocalDate> tglmasuk = Optional.ofNullable(barang.getTglmasuk());
-        if (tglmasuk.isPresent()) {
-            String tanggalMasuk = tglmasuk.get().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-            if (tanggalMasuk.isEmpty()) {
-                throw new AllException("Tanggal masuk harus di isi !!!");
-            }
-        } else {
-            throw new AllException("Tanggal masuk harus di isi !!!");
-        }
+//            if (role != null) {
+                for (int i = 0; i < 10; i++) {
+                    String randomBarang = UUIDGeneratorService.generateBarang();
+                    barang.setKodebarang(randomBarang);
+                }
 
-        return barangRepository.save(barang);
+                if (barang.getNamabarang() == null || barang.getNamabarang().isEmpty()) {
+                    throw new AllException("Nama barang harus di isi !!!");
+                }
+                if (barang.getJenisbarang() == null || barang.getJenisbarang().isEmpty()) {
+                    throw new AllException("Jenis barang harus di isi !!!");
+                }
+                if (barang.getJumlahbarang() == null || barang.getJumlahbarang().describeConstable().isEmpty()) {
+                    throw new AllException("Jumlah barang harus di isi !!!");
+                }
+                if (barang.getHargabarang() == null || barang.getHargabarang().describeConstable().isEmpty()) {
+                    throw new AllException("No HP harus di isi !!!");
+                }
+
+                Optional<LocalDate> tglmasuk = Optional.ofNullable(barang.getTglmasuk());
+                if (tglmasuk.isPresent()) {
+                    String tanggalMasuk = tglmasuk.get().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+                    if (tanggalMasuk.isEmpty()) {
+                        throw new AllException("Tanggal masuk harus di isi !!!");
+                    }
+                } else {
+                    throw new AllException("Tanggal masuk harus di isi !!!");
+                }
+
+                return barangRepository.save(barang);
+//            } else {
+//                throw new AllException("Role not found");
+//            }
+//        } else {
+//            throw new AllException("Invalid User Role");
+//        }
     }
 
 
@@ -57,7 +83,6 @@ private final BarangRepository barangRepository;
 
 
     public Barang listBarangById(Long id) throws AllException {
-
         Optional<Barang> barang = barangRepository.findById(id);
 
         if(!barang.isPresent()){
@@ -67,7 +92,12 @@ private final BarangRepository barangRepository;
     }
 
 
-    public void deleteBarangById(Long id) throws AllException {
+    public void deleteBarangById(Long id,Map<String,String> requestMap,String userRole) throws AllException {
+        log.info("Received request with payload: {}", requestMap);
+
+        userRole = requestMap.get("role");
+        log.info("User Role from request: {}", userRole);
+
         boolean exist = barangRepository.existsById(id);
         if(!exist){
             throw new AllException("Barang dengan Id" + id + "tidak ada");
@@ -77,7 +107,12 @@ private final BarangRepository barangRepository;
     }
 
 
-    public Barang updateBarangById(Long id, Barang barang) throws AllException {
+    public Barang updateBarangById(Long id, Barang barang,Map<String,String> requestMap,String userRole) throws AllException {
+        log.info("Received request with payload: {}", requestMap);
+
+        userRole = requestMap.get("role");
+        log.info("User Role from request: {}", userRole);
+
         if (barang.getNamabarang() == null || barang.getNamabarang().isEmpty()) {
             throw new AllException("Nama barang harus di isi !!!");
         }
@@ -117,7 +152,13 @@ private final BarangRepository barangRepository;
     }
 
 
-    public void deleteBarangByKodeBarang(String kodebarang) throws AllException {
+    public void deleteBarangByKodeBarang(String kodebarang,Map<String,String> requestMap,String userRole) throws AllException {
+        log.info("Received request with payload: {}", requestMap);
+
+        userRole = requestMap.get("role");
+        log.info("User Role from request: {}", userRole);
+
+
         Optional <Barang> deleteBarang = barangRepository.findBykodebarang(kodebarang);
         if(!deleteBarang.isPresent()){
             throw new AllException("Barang dengan kode barang" + kodebarang + "tidak ada");
@@ -127,7 +168,12 @@ private final BarangRepository barangRepository;
     }
 
 
-    public Barang updateBarangByKodeBarang(String kodebarang, Barang barang) throws AllException {
+    public Barang updateBarangByKodeBarang(String kodebarang, Barang barang,Map<String,String> requestMap,String userRole) throws AllException {
+        log.info("Received request with payload: {}", requestMap);
+
+        userRole = requestMap.get("role");
+        log.info("User Role from request: {}", userRole);
+
         if (barang.getNamabarang() == null || barang.getNamabarang().isEmpty()) {
             throw new AllException("Nama barang harus di isi !!!");
         }

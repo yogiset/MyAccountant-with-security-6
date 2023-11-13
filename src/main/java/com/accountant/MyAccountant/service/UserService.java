@@ -2,6 +2,7 @@ package com.accountant.MyAccountant.service;
 
 import com.accountant.MyAccountant.constant.ApiConstant;
 import com.accountant.MyAccountant.entity.User;
+import com.accountant.MyAccountant.exception.AllException;
 import com.accountant.MyAccountant.jwt.JwtUtil;
 import com.accountant.MyAccountant.repository.UserRepository;
 import com.accountant.MyAccountant.utils.UserUtils;
@@ -32,6 +33,7 @@ public class UserService{
     private final JwtUtil jwtUtil;
 
     private final PasswordEncoder passwordEncoder;
+
 
     public ResponseEntity<String> signUp(Map<String, String> requestMap) {
         log.info("Inside signup{}", requestMap);
@@ -224,9 +226,23 @@ public class UserService{
 //    }
 
 
-    public ResponseEntity<String> changePassword(Map<String, String> requestMap, String userEmail) {
+    public ResponseEntity<String> changePassword(Map<String, String> requestMap,User userr,String userEmail,String userRole) {
         try {
             log.info("Inside changePassword");
+
+            log.info("Received request with payload: {}", requestMap);
+
+//            userRole = requestMap.get("role");
+//            log.info("User Role from request: {}", userRole);
+//            if (userRole == null || userRole.isEmpty()) {
+//                log.error("role is null or empty");
+//                throw new AllException("role is null or empty");
+//            }
+
+//            if ("admin".equalsIgnoreCase(userRole)) {
+//                User roles = userRepository.findByRole(userRole);
+//
+//                if (roles != null) {
 
             userEmail = requestMap.get("email");
 
@@ -265,6 +281,13 @@ public class UserService{
                 log.error("Token is null or empty");
                 return UserUtils.getResponseEntity("Token is null or empty", HttpStatus.BAD_REQUEST);
             }
+//                } else {
+//                    throw new AllException("Role not found");
+//                }
+//            } else {
+//                throw new AllException("Invalid User Role");
+//            }
+
         } catch (Exception ex) {
             // Log the exception for debugging purposes
             log.error("An error occurred while changing the password", ex);
@@ -272,12 +295,18 @@ public class UserService{
             // Handle the exception more gracefully and provide a meaningful error message
             return UserUtils.getResponseEntity("An error occurred while changing the password.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+
+
     }
 
 
-    public ResponseEntity<String> forgotPassword(Map<String, String> requestMap) {
+    public ResponseEntity<String> forgotPassword(Map<String, String> requestMap,String userRole) {
         log.info("Inside forgotPassword");
+        log.info("Received request with payload: {}", requestMap);
 
+        userRole = requestMap.get("role");
+        log.info("User Role from request: {}", userRole);
 
         try {
             User user = userRepository.findByEmailId(requestMap.get("email"));

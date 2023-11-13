@@ -1,6 +1,7 @@
 package com.accountant.MyAccountant.repository;
 
 import com.accountant.MyAccountant.entity.Barang;
+import com.accountant.MyAccountant.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -19,4 +20,5 @@ public interface BarangRepository extends JpaRepository<Barang,Long> {
     @Modifying
     @Query("DELETE FROM Barang b WHERE b.kodebarang = :kodebarang")
     void deleteBykodebarang(String kodebarang);
+
 }

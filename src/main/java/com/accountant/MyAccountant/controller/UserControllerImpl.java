@@ -56,9 +56,9 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public ResponseEntity<String> forgotPassword(Map<String, String> requestMap) {
+    public ResponseEntity<String> forgotPassword(Map<String, String> requestMap,String userRole) {
         try {
-            return userService.forgotPassword(requestMap);
+            return userService.forgotPassword(requestMap,userRole);
         }catch (Exception ex){
             ex.printStackTrace();
         }
@@ -66,10 +66,10 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public ResponseEntity<String> changePassword(Map<String, String> requestMap,String userEmail) {
+    public ResponseEntity<String> changePassword(Map<String, String> requestMap,User userr,String userEmail,String userRole) {
         try {
 
-            return userService.changePassword(requestMap,userEmail);
+            return userService.changePassword(requestMap,userr,userEmail,userRole);
         }catch (Exception ex){
             ex.printStackTrace();
         }

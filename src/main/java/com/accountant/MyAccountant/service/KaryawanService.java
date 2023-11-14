@@ -5,6 +5,7 @@ import com.accountant.MyAccountant.exception.AllException;
 import com.accountant.MyAccountant.repository.KaryawanRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -65,6 +66,14 @@ private String userRole;
         return karyawanRepository.findAll();
     }
 
+
+    public List<Karyawan> listKaryawanDescending(String field) {
+        return karyawanRepository.findAll(Sort.by(Sort.Direction.ASC,field));
+    }
+
+    public List<Karyawan> listKaryawanAscending(String field) {
+        return karyawanRepository.findAll(Sort.by(Sort.Direction.DESC,field)); 
+    }
 
     public Karyawan fetchKaryawanById(Long id) throws AllException {
         Optional<Karyawan> karyawan = karyawanRepository.findById(id);
@@ -195,4 +204,5 @@ private String userRole;
 
         return updatedKaryawan;
     }
+
 }

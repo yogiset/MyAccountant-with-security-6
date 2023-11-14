@@ -7,6 +7,7 @@ import com.accountant.MyAccountant.repository.BarangRepository;
 import com.accountant.MyAccountant.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -79,6 +80,16 @@ private final UserRepository userRepository;
     public List<Barang> listBarang() {
 
         return barangRepository.findAll();
+    }
+
+    public List<Barang> listBarangDescending(String field) {
+
+        return barangRepository.findAll(Sort.by(Sort.Direction.DESC,field));
+    }
+
+    public List<Barang> listBarangAscending(String field) {
+
+        return barangRepository.findAll(Sort.by(Sort.Direction.ASC,field));
     }
 
 
@@ -211,4 +222,6 @@ private final UserRepository userRepository;
 
         return updatedBarang;
     }
+
+
 }

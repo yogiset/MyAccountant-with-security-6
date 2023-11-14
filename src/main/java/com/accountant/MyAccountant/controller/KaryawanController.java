@@ -1,5 +1,6 @@
 package com.accountant.MyAccountant.controller;
 
+import com.accountant.MyAccountant.entity.Barang;
 import com.accountant.MyAccountant.entity.Karyawan;
 import com.accountant.MyAccountant.exception.AllException;
 import com.accountant.MyAccountant.service.KaryawanService;
@@ -23,6 +24,16 @@ public class KaryawanController {
     @GetMapping("/all")
     public List<Karyawan> showAllKaryawan(){
         return karyawanService.showAllKaryawan();
+    }
+
+    @GetMapping("/sortasc/{field}")
+    public List<Karyawan> listKaryawanByAsc(@PathVariable String field){
+        return karyawanService.listKaryawanAscending(field);
+    }
+
+    @GetMapping("/sortdsc/{field}")
+    public List<Karyawan> listKaryawanByDsc(@PathVariable String field){
+        return karyawanService.listKaryawanDescending(field);
     }
 
     @GetMapping("/cari/{id}")

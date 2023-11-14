@@ -27,6 +27,17 @@ public class BarangController {
     public List<Barang> listBarang(){
         return barangService.listBarang();
     }
+
+    @GetMapping("/sortasc/{field}")
+    public List<Barang> listBarangByAsc(@PathVariable String field){
+        return barangService.listBarangAscending(field);
+    }
+
+    @GetMapping("/sortdsc/{field}")
+    public List<Barang> listBarangByDsc(@PathVariable String field){
+        return barangService.listBarangDescending(field);
+    }
+
     @GetMapping("/cari/{id}")
     public Barang listBarangById(@PathVariable("id")Long id) throws AllException {
         return barangService.listBarangById(id);

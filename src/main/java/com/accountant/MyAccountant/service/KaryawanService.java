@@ -5,6 +5,8 @@ import com.accountant.MyAccountant.exception.AllException;
 import com.accountant.MyAccountant.repository.KaryawanRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
@@ -73,6 +75,21 @@ private String userRole;
 
     public List<Karyawan> listKaryawanAscending(String field) {
         return karyawanRepository.findAll(Sort.by(Sort.Direction.DESC,field)); 
+    }
+
+    public Page<Karyawan> showAllKaryawanWithPagination(int offset, int pageSize) {
+        Page<Karyawan>pageable =karyawanRepository.findAll(PageRequest.of(offset, pageSize));
+        return pageable;
+    }
+
+    public Page<Karyawan> showAllKaryawanWithPaginationAscName(int offset, int pageSize) {
+        Page<Karyawan>pageable =karyawanRepository.findAll(PageRequest.of(offset, pageSize,Sort.by("nama").ascending()));
+        return pageable;
+    }
+
+    public Page<Karyawan> showAllKaryawanWithPaginationDescName(int offset, int pageSize) {
+        Page<Karyawan>pageable =karyawanRepository.findAll(PageRequest.of(offset, pageSize,Sort.by("nama").descending()));
+        return pageable;
     }
 
     public Karyawan fetchKaryawanById(Long id) throws AllException {
@@ -204,5 +221,6 @@ private String userRole;
 
         return updatedKaryawan;
     }
+
 
 }

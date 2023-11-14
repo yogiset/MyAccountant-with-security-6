@@ -7,6 +7,8 @@ import com.accountant.MyAccountant.repository.BarangRepository;
 import com.accountant.MyAccountant.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
@@ -90,6 +92,20 @@ private final UserRepository userRepository;
     public List<Barang> listBarangAscending(String field) {
 
         return barangRepository.findAll(Sort.by(Sort.Direction.ASC,field));
+    }
+    public Page<Barang> showAllBarangWithPagination(int offset, int pageSize) {
+        Page<Barang>pageable = barangRepository.findAll(PageRequest.of(offset,pageSize));
+        return pageable;
+    }
+
+    public Page<Barang> showAllBarangWithPaginationAscName(int offset, int pageSize) {
+        Page<Barang>pageable = barangRepository.findAll(PageRequest.of(offset,pageSize,Sort.by("namabarang").ascending()));
+        return pageable;
+    }
+
+    public Page<Barang> showAllBarangWithPaginationDescName(int offset, int pageSize) {
+        Page<Barang>pageable = barangRepository.findAll(PageRequest.of(offset,pageSize,Sort.by("namabarang").descending()));
+        return pageable;
     }
 
 
@@ -222,6 +238,5 @@ private final UserRepository userRepository;
 
         return updatedBarang;
     }
-
 
 }

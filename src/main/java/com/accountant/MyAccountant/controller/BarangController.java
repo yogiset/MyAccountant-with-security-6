@@ -5,8 +5,10 @@ import com.accountant.MyAccountant.entity.User;
 import com.accountant.MyAccountant.exception.AllException;
 import com.accountant.MyAccountant.service.BarangService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +38,36 @@ public class BarangController {
     @GetMapping("/sortdsc/{field}")
     public List<Barang> listBarangByDsc(@PathVariable String field){
         return barangService.listBarangDescending(field);
+    }
+    @GetMapping("/pagination/{offset}/{pageSize}")
+    public ResponseEntity<List<Barang>> showAllBarangPagination(@PathVariable int offset, @PathVariable int pageSize) {
+        Page<Barang> barangWithPagination = barangService.showAllBarangWithPagination(offset, pageSize);
+
+        List<Barang> barangList = barangWithPagination.getContent();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-Total-Count", String.valueOf(barangWithPagination.getTotalElements()));
+
+        return new ResponseEntity<>(barangList, headers, HttpStatus.OK);
+    }
+    @GetMapping("/paginationwithascname/{offset}/{pageSize}")
+    public ResponseEntity<List<Barang>> showAllBarangPaginationWithAscName(@PathVariable int offset, @PathVariable int pageSize) {
+        Page<Barang> barangWithPaginationAscName = barangService.showAllBarangWithPaginationAscName(offset, pageSize);
+
+        List<Barang> barangList = barangWithPaginationAscName.getContent();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-Total-Count", String.valueOf(barangWithPaginationAscName.getTotalElements()));
+
+        return new ResponseEntity<>(barangList, headers, HttpStatus.OK);
+    }
+    @GetMapping("/paginationwithdescname/{offset}/{pageSize}")
+    public ResponseEntity<List<Barang>> showAllBarangPaginationWithDescName(@PathVariable int offset, @PathVariable int pageSize) {
+        Page<Barang> barangWithPaginationDescName = barangService.showAllBarangWithPaginationDescName(offset, pageSize);
+
+        List<Barang> barangList = barangWithPaginationDescName.getContent();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-Total-Count", String.valueOf(barangWithPaginationDescName.getTotalElements()));
+
+        return new ResponseEntity<>(barangList, headers, HttpStatus.OK);
     }
 
     @GetMapping("/cari/{id}")

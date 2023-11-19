@@ -1,14 +1,17 @@
 package com.accountant.MyAccountant.controller;
 
+import com.accountant.MyAccountant.constant.ApiConstant;
 import com.accountant.MyAccountant.entity.Barang;
 import com.accountant.MyAccountant.entity.User;
 import com.accountant.MyAccountant.exception.AllException;
 import com.accountant.MyAccountant.service.BarangService;
+import com.accountant.MyAccountant.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
@@ -20,11 +23,11 @@ public class BarangController {
     @Autowired
     private BarangService barangService;
 
-
     @PostMapping("/add")
-    public Barang addBarang(@RequestBody Barang barang,Map<String,String> requestMap,String userRole,User user) throws AllException {
-        return barangService.addBarang(barang,requestMap,userRole,user);
+    public Barang addBarang(@RequestBody Barang barang,Map<String,String> requestMap,String userRole) throws AllException {
+        return barangService.addBarang(barang,requestMap,userRole);
     }
+
     @GetMapping("/all")
     public List<Barang> listBarang(){
         return barangService.listBarang();

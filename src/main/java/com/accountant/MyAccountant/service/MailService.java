@@ -2,6 +2,7 @@ package com.accountant.MyAccountant.service;
 
 import com.accountant.MyAccountant.entity.User;
 import com.accountant.MyAccountant.jwt.JwtUtil;
+import com.accountant.MyAccountant.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,6 +21,8 @@ public class MailService {
 
     private final JavaMailSender javaMailSender;
     private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
+
 
     @Async
     public void sendActivationEmail(User user) {

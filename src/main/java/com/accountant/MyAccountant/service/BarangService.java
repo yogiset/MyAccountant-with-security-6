@@ -1,10 +1,8 @@
 package com.accountant.MyAccountant.service;
 
 import com.accountant.MyAccountant.entity.Barang;
-import com.accountant.MyAccountant.entity.User;
 import com.accountant.MyAccountant.exception.AllException;
 import com.accountant.MyAccountant.repository.BarangRepository;
-import com.accountant.MyAccountant.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -23,9 +21,9 @@ import java.util.Optional;
 public class BarangService {
 
 private final BarangRepository barangRepository;
-private final UserRepository userRepository;
 
-    public Barang addBarang(Barang barang,Map<String,String> requestMap,String userRole,User user) throws AllException {
+
+    public Barang addBarang(Barang barang,Map<String,String> requestMap,String userRole) throws AllException {
 
         log.info("Received request with payload: {}", requestMap);
 
@@ -77,7 +75,6 @@ private final UserRepository userRepository;
 //            throw new AllException("Invalid User Role");
 //        }
     }
-
 
     public List<Barang> listBarang() {
 
@@ -238,5 +235,6 @@ private final UserRepository userRepository;
 
         return updatedBarang;
     }
+
 
 }

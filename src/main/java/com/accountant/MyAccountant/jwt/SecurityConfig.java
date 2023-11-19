@@ -2,11 +2,18 @@ package com.accountant.MyAccountant.jwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -18,6 +25,7 @@ import java.util.Arrays;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity
 public class SecurityConfig {
 
 
@@ -38,9 +46,10 @@ public class SecurityConfig {
 //                .anyRequest()
 //                .authenticated()
 //                .and()
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+// //               .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 //                .authenticationProvider(authenticationProvider)
-//                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+//                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+//                .formLogin(Customizer.withDefaults());
 //
 //        return http.build();
 //    }
@@ -49,20 +58,23 @@ public class SecurityConfig {
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http    .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeRequests()
-                .requestMatchers("/karyawan/updatecode/{kodekaryawan}","/karyawan/deletecode/{kodekaryawan}","/barang/deletecode/{kodebarang}","/barang/updatecode/{kodebarang}","/api/auth/user","/user/login","/user/profile","/user/changePassword","/user/me","/user/register","/user/forgotPassword","/user/register/accountVerification/**","/karyawan/all","/karyawan/add","/karyawan/cari/{id}","/karyawan/delete/{id}","/karyawan/delete/","/karyawan/update/","/barang/update/","/barang/delete/","/karyawan/update/{id}","/barang/all","/barang/add","/barang/cari/{id}","/barang/delete/{id}","/barang/update/{id}")
+                .requestMatchers("/login,/karyawan/updatecode/{kodekaryawan}","/karyawan/deletecode/{kodekaryawan}","/barang/deletecode/{kodebarang}","/barang/updatecode/{kodebarang}","/api/auth/user","/user/login","/user/profile","/user/changePassword","/user/me","/user/register","/user/forgotPassword","/user/register/accountVerification/**","/karyawan/all","/karyawan/add","/karyawan/cari/{id}","/karyawan/delete/{id}","/karyawan/delete/","/karyawan/update/","/barang/update/","/barang/delete/","/karyawan/update/{id}","/barang/all","/barang/add","/barang/cari/{id}","/barang/delete/{id}","/barang/update/{id}")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .formLogin(Customizer.withDefaults());
 
         return http.build();
     }
+
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {

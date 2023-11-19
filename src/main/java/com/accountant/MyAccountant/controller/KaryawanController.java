@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,8 +25,8 @@ public class KaryawanController {
     public Karyawan addKaryawan(@RequestBody Karyawan karyawan, Map<String,String> requestMap) throws AllException {
         return karyawanService.addKaryawan(karyawan,requestMap);
     }
-
     @GetMapping("/all")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public List<Karyawan> showAllKaryawan(){
         return karyawanService.showAllKaryawan();
     }

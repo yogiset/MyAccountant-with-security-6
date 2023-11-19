@@ -1,6 +1,7 @@
 package com.accountant.MyAccountant.service;
 
 import com.accountant.MyAccountant.constant.ApiConstant;
+import com.accountant.MyAccountant.dto.AuthenticationResponse;
 import com.accountant.MyAccountant.entity.User;
 import com.accountant.MyAccountant.exception.AllException;
 import com.accountant.MyAccountant.jwt.JwtUtil;
@@ -14,6 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
@@ -33,6 +37,8 @@ public class UserService{
     private final JwtUtil jwtUtil;
 
     private final PasswordEncoder passwordEncoder;
+
+    private final AuthenticationManager authenticationManager;
 
 
     public ResponseEntity<String> signUp(Map<String, String> requestMap) {
@@ -87,47 +93,72 @@ public class UserService{
         user.setPassword(encodedPassword);
 
         user.setStatus("false");
-        user.setRole("user");
+        user.setRole("ROLE_ADMIN");
         user.setCreated(Instant.now());
         user.setEnabled(false);
         return userRepository.save(user);
     }
 
 
-    public ResponseEntity<String> login(Map<String, String> requestMap) {
-        log.info("Inside Login");
-        try {
-            String email = requestMap.get("email");
-            String password = requestMap.get("password");
+//    public ResponseEntity<String> login(User user) {
+//        log.info("Inside Login");
+//        try {
+//            String email = user.getEmail();
+//            String password = user.getPassword();
+//
+//                    authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(
+//                            email,password
+//                )
+//        );
+//
+//            Optional<User> userOpt1 = userRepository.findByEmail(email);
+//            if (!userOpt1.isPresent()) {
+//                return new ResponseEntity<>("{\"message\":\"Our System didn't find your email, Please Register first !\"}", HttpStatus.BAD_REQUEST);
+//            }
+//
+//            User userr = userRepository.findByEmailId(email);
+//            if (userr != null) {
+//                // Check if the provided password matches the stored password
+//
+//                    if ("true".equalsIgnoreCase(userr.getStatus())) {
+//                        // Generate the JWT token for the authenticated user
+//                        String jwtToken = jwtUtil.generateToken(userr.getEmail(), userr.getRole(), userr.getName());
+//
+//                        // Return the token as a JSON response
+//                        return new ResponseEntity<>("{\"token\":\"" + jwtToken + "\"}", HttpStatus.OK);
+//                    } else {
+//                        return new ResponseEntity<>("{\"message\":\"Please Verify your email first.\"}", HttpStatus.BAD_REQUEST);
+//                    }
+//                }
+//        } catch (Exception ex) {
+//            log.error("{}", ex);
+//        }
+//        return new ResponseEntity<>("{\"message\":\"Bad Credentials. Please check your password or email\"}", HttpStatus.BAD_REQUEST);
+//    }
 
 
-            Optional<User> userOpt1 = userRepository.findByEmail(email);
-            if (!userOpt1.isPresent()) {
-                return new ResponseEntity<>("{\"message\":\"Our System didn't find your email, Please Register first !\"}", HttpStatus.BAD_REQUEST);
-            }
-            // Retrieve the user by email from the repository
-            User user = userRepository.findByEmailId(email);
-            if (user != null) {
-                // Check if the provided password matches the stored password
-                if (passwordEncoder.matches(password, user.getPassword())) {
-                    if ("true".equalsIgnoreCase(user.getStatus())) {
-                        // Generate the JWT token for the authenticated user
-                        String jwtToken = jwtUtil.generateToken(user.getEmail(), user.getRole(), user.getName());
+    public ResponseEntity<AuthenticationResponse> authenticate(User user) {
 
-                        // Return the token as a JSON response
-                        return new ResponseEntity<>("{\"token\":\"" + jwtToken + "\"}", HttpStatus.OK);
-                    } else {
-                        return new ResponseEntity<>("{\"message\":\"Please Verify your email first.\"}", HttpStatus.BAD_REQUEST);
-                    }
-                }
-            }
+        String email = user.getEmail();
+        String password = user.getPassword();
 
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        email,password
+                )
+        );
+        User userr = userRepository.findByEmailId(email);
 
-        } catch (Exception ex) {
-            log.error("{}", ex);
-        }
-        return new ResponseEntity<>("{\"message\":\"Bad Credentials. Please check your password or email\"}", HttpStatus.BAD_REQUEST);
+        var jwtToken = jwtUtil.generateToken(userr.getEmail(),userr.getRole(),userr.getName());
+
+        AuthenticationResponse authenticationResponse = AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
+
+        return ResponseEntity.ok(authenticationResponse);
     }
+
 
 
     public ResponseEntity<String> verifyAccount(String token) {
@@ -346,4 +377,6 @@ public class UserService{
 
         return password.toString();
     }
+
+
 }

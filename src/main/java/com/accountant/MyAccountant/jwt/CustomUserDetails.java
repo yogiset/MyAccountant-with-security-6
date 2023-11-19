@@ -3,33 +3,43 @@ package com.accountant.MyAccountant.jwt;
 
 import com.accountant.MyAccountant.entity.User;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class CustomUserDetails implements UserDetails {
-    private final User user;
+    private String email;
+    private String password;
+    private String status;
+    private List<GrantedAuthority> authorities;
 
     public CustomUserDetails(User user) {
-        this.user = user;
+        email = user.getEmail();
+        password = user.getPassword();
+        authorities = Arrays.stream(user.getRole().split(","))
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+        status = user.getStatus();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // You can implement this method to provide user roles/authorities
-        // Return a list of GrantedAuthority objects based on user roles
-        return Collections.emptyList(); // Modify this based on your actual implementation
+        return authorities;
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return user.getEmail();
+        return email;
     }
 
     @Override
@@ -49,6 +59,6 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return "true".equalsIgnoreCase(user.getStatus());
+        return "true".equalsIgnoreCase(status);
     }
 }

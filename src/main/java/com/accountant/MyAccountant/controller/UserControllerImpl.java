@@ -1,13 +1,17 @@
 package com.accountant.MyAccountant.controller;
 
 import com.accountant.MyAccountant.constant.ApiConstant;
+import com.accountant.MyAccountant.dto.AuthenticationResponse;
 import com.accountant.MyAccountant.entity.User;
 import com.accountant.MyAccountant.service.UserService;
 import com.accountant.MyAccountant.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import javax.naming.AuthenticationException;
 import java.util.List;
 import java.util.Map;
 
@@ -27,15 +31,21 @@ public class UserControllerImpl implements UserController {
         return UserUtils.getResponseEntity(ApiConstant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+//    @Override
+//    public ResponseEntity<String> login(User user) {
+//        try {
+//            return userService.login(user);
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//        return UserUtils.getResponseEntity(ApiConstant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
+
     @Override
-    public ResponseEntity<String> login(Map<String, String> requestMap) {
-        try {
-            return userService.login(requestMap);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return UserUtils.getResponseEntity(ApiConstant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<AuthenticationResponse> authenticate(User user) {
+        return userService.authenticate(user);
     }
+
 
     @Override
     public ResponseEntity<String> verifyAccount(@PathVariable String token) {
